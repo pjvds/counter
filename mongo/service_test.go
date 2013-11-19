@@ -18,17 +18,26 @@ var _ = Describe("Mongo Service", func() {
 		Expect(service).ToNot(BeNil())
 	})
 
-	Context("when increasing a counter that does not exist", func() {
+	Context("when increasing a counter", func() {
 		var name counter.Name
 		var err error
+		var beforeIncrease int
+		var afterIncrease int
 
 		BeforeEach(func() {
 			name = counter.Name("my-counter")
+
+			beforeIncrease, _ = service.Get(name)
 			err = service.Increase(name)
+			afterIncrease, _ = service.Get(name)
 		})
 
 		It("should not error", func() {
 			Expect(err).NotTo(HaveOccured())
+		})
+
+		It("should have increased by one", func() {
+			Expect(afterIncrease - beforeIncrease).To(Equal(1))
 		})
 	})
 
