@@ -1,4 +1,6 @@
 box: wercker/golang
+services:
+  - wercker/mongo
 build:
   steps:
     - setup-go-workspace
