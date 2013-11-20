@@ -26,11 +26,11 @@ var _ = Describe("Host", func() {
 
 		response := httptest.NewRecorder()
 		request, _ := http.NewRequest("GET", "http://localhost/"+timerName, nil)
-		value := 15
+		timerValue := 15
 
 		BeforeEach(func() {
 			service.GetFunc = func(name counter.Name) (int, error) {
-				return value, nil
+				return timerValue, nil
 			}
 			host.ServeHTTP(response, request)
 		})
@@ -66,7 +66,7 @@ var _ = Describe("Host", func() {
 			})
 
 			It("Should return value as provided by service", func() {
-				Expect(body.Value).Should(Equal(value))
+				Expect(body.Value).Should(Equal(timerValue))
 			})
 		})
 	})

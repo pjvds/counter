@@ -27,7 +27,7 @@ func (host *ServiceHost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	name := counter.Name(r.URL.Path)
+	name := counter.Name(r.URL.Path[1:])
 
 	if err := host.service.Increase(name); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
