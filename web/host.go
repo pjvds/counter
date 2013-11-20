@@ -1,7 +1,7 @@
 package web
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/pjvds/counter"
 	"net/http"
 )
@@ -41,5 +41,12 @@ func (host *ServiceHost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
-	w.Write([]byte(fmt.Sprintf("{'%v': %v}", name, value)))
+	encoder := json.NewEncoder(w)
+	encoder.Encode(struct {
+		Name  counter.Name `json:"name"`
+		Value int          `json:"value"`
+	}{
+		Name:  name,
+		Value: value,
+	})
 }
