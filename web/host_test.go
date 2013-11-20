@@ -22,12 +22,15 @@ var _ = Describe("Host", func() {
 	})
 
 	Context("Handling correct timer request", func() {
+		timerName := "my-timer"
+
 		response := httptest.NewRecorder()
-		request, _ := http.NewRequest("GET", "http://localhost/my-timer", nil)
+		request, _ := http.NewRequest("GET", "http://localhost/"+timerName, nil)
+		value := 15
 
 		BeforeEach(func() {
 			service.GetFunc = func(name counter.Name) (int, error) {
-				return 15, nil
+				return value, nil
 			}
 			host.ServeHTTP(response, request)
 		})
@@ -45,16 +48,26 @@ var _ = Describe("Host", func() {
 			Expect(response.Body.Len()).Should(BeNumerically(">", 0))
 		})
 
-		It("Should return value returned by service", func() {
+		Context("The body", func() {
 			var body struct {
-				Value int `json:"value"`
-			}
-			decoder := json.NewDecoder(response.Body)
-			if err := decoder.Decode(&body); err != nil {
-				Fail(fmt.Sprintf("Error unmarshalling body: %v, %v", string(response.Body.Bytes()), err))
+				Name  string `json:"name"`
+				Value int    `json:"value"`
 			}
 
-			Expect(body.Value).Should(Equal(15))
+			BeforeEach(func() {
+				decoder := json.NewDecoder(response.Body)
+				if err := decoder.Decode(&body); err != nil {
+					Fail(fmt.Sprintf("Error unmarshalling body: %v, %v", string(response.Body.Bytes()), err))
+				}
+			})
+
+			It("Should return name as provided by request", func() {
+				Expect(body.Name).Should(Equal(timerName))
+			})
+
+			It("Should return value as provided by service", func() {
+				Expect(body.Value).Should(Equal(value))
+			})
 		})
 	})
 })
