@@ -1,6 +1,6 @@
 box: wercker/golang
 services:
-  - wercker/mongo
+  - wercker/mongodb
 build:
   steps:
     - setup-go-workspace
