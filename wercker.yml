@@ -1,4 +1,4 @@
-box: wercker-labs/docker
+box: wercker/golang
 services:
   - wercker/mongodb
 build:
